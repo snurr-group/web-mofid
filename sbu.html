@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Emscripten-Generated Code</title>
+    <link href="mofid.css" rel="stylesheet" type="text/css">  <!-- old emscripten boilerplate -->
+  </head>
+  <body>
+  <h1>MOFid/MOFkey generator</h1>
+    <div class="spinner" id='spinner'></div>
+    <div class="emscripten" id="status">Downloading...</div>
+
+      <script type="text/javascript">
+        var lsdir = function(path) {
+          return FS.readdir(path).filter(function(e) {
+            return !['..', '.'].includes(e);  // filter out current and parent dirs
+          }).sort();
+        };
+
+        var SmilesToSVG = function(smiles, createSVG) {
+          // From Noel O'Boyle: https://baoilleach.blogspot.com/2015/02/cheminformaticsjs-open-babel.html
+          // See also http://baoilleach.webfactional.com/site_media/blog/emscripten/openbabel/webdepict.html
+          C_SmilesToSVG = Module.cwrap(
+            'SmilesToSVG', 'number', ['string', 'number', 'number', 'number']
+          );
+
+          var buflen = 65536;
+          var ptr = Module._malloc(buflen);
+          var buffer= new Uint8Array(Module.HEAPU8.buffer, ptr, buflen); // Get a bytes view on the newly allocated buffer.
+          var length = C_SmilesToSVG(smiles, createSVG, ptr, buflen);
+          if (length == -1) return "";
+          var ans = Module.Pointer_stringify(ptr);
+          Module._free(ptr);
+          return ans;
+        };
+
+        var getMOFid = function(cifdata) {
+          C_obcode = Module.cwrap(
+            'analyzeMOFc', 'null', ['string', 'number', 'number']
+          );
+
+          if(!FS.analyzePath('/Output').exists) {
+            FS.mkdir('/Output');  // See also docs on filesystem API: https://kripken.github.io/emscripten-site/docs/api_reference/Filesystem-API.html
+            // Ideally, the C_obcode executable would automatically make all of the directories,
+            // but it's broken at least in an old version of Emscripten.
+            FS.mkdir('/Output/MetalOxo');
+            FS.mkdir('/Output/SingleNode');
+            FS.mkdir('/Output/AllNode');
+            FS.mkdir('/Output/StandardIsolated');
+          }
+
+          var buflen = 65536;
+          var ptr = Module._malloc(buflen);
+          var buffer= new Uint8Array(Module.HEAPU8.buffer, ptr, buflen); // Get a bytes view on the newly allocated buffer.
+          C_obcode(cifdata, ptr, buflen);
+          var ans = Module.Pointer_stringify(ptr);
+          Module._free(ptr);
+          return ans;
+        };
+
+        var rawToSmiles = function(raw_mofid) {
+          // Converts the raw output from the MOFid code to a parseable SMILES format
+          var lines = raw_mofid.replace(/\t/g, '').split(/r\n|\r|\n/g);  // remove trailing tabs before splitting
+          lines.pop();  // remove line about number of simplified nets
+          return lines.join('.');
+        }
+
+        handleInput = function() {
+          var ciffile = document.getElementById("cifloader").files[0];
+          document.getElementById("obresults").innerHTML = "<pre>Processing " + ciffile.name + "</pre>";
+          var cifreader = new FileReader();
+          cifreader.onload = function(event) {
+            var mofid = getMOFid(event.target.result);
+            if (mofid != "") {
+              document.getElementById("obresults").innerHTML = "<pre>" + mofid + "</pre>";
+
+              clearDropdown("cifdownload");
+              updateFileList();  // populate the initial list of files
+
+              document.getElementById("resultsdownload").style.display = "block";
+
+              var svg = SmilesToSVG(rawToSmiles(mofid), true);
+              document.getElementById("svgimage").innerHTML = svg;
+
+            } else {
+              document.getElementById("obresults").innerHTML = "<pre>Failed to calculate MOFid components</pre>";
+              document.getElementById("resultsdownload").style.display = "none";
+              document.getElementById("svgimage").innerHTML = "";
+            }
+          };
+          cifreader.readAsText(ciffile);
+        }
+
+        clearDropdown = function(select_id) {
+          // Clear out the listed options from a <select> tag
+          var select_tag = document.getElementById(select_id);
+          while (select_tag.firstChild) {
+            select_tag.removeChild(select_tag.firstChild);
+          }
+        }
+
+        updateFileList = function() {
+          clearDropdown("cifdownload");
+          var folder_input = document.getElementById("folderdownload");
+          var folder_name = folder_input.options[folder_input.selectedIndex].value;
+          var filelist = lsdir("/Output/" + folder_name);
+          filelist.forEach(function(file) {
+            var option = document.createElement("option");
+            option.text = file;
+            option.value = file;
+            document.getElementById("cifdownload").appendChild(option);
+          });
+        }
+
+        handleDownload = function() {
+          var folder_input = document.getElementById("folderdownload");
+          var download_input = document.getElementById("cifdownload");
+          var folder_name = folder_input.options[folder_input.selectedIndex].value;
+          var filename = download_input.options[download_input.selectedIndex].value;
+          var filepath = "Output/" + folder_name + "/" + filename;  // Set in deconstructor.h:DEFAULT_OUTPUT_PATH
+
+          var contents = FS.readFile(filepath, {'encoding': 'utf8'});
+          var download_contents = "data:text/plain;base64," + btoa(contents);
+
+          // Open download dialog using a temporary hidden link
+          var fakelink = document.createElement("a");
+          fakelink.setAttribute("href", download_contents);
+          fakelink.setAttribute("download", filename);
+          fakelink.style.display = "none";
+          document.body.appendChild(fakelink);
+          fakelink.click();
+          document.body.removeChild(fakelink);
+        }
+        </script>
+
+            <div class="emscripten">
+              <progress value="0" max="100" id="progress" hidden=1></progress>
+            </div>
+Enter CIF:
+<input type="file" id="cifloader"></input>
+<input type="submit" value="Submit" id="emrun" onclick="handleInput()"></input>
+<br/>
+            <span id="obresults"></span>
+<div id="resultsdownload" style="display: none;">
+<p style="font-weight:bold;">Download results:</p>
+Algorithm:
+<select id="folderdownload" onchange="updateFileList()">
+  <!--<option value="base">(utilities)</option>-->
+  <option value="MetalOxo">Metal-Oxo</option>
+  <option value="SingleNode">Single Node</option>
+  <option value="AllNode">All Node</option>
+  <option value="StandardIsolated">Standard Algorithm</option>
+</select>
+CIF:
+<select id="cifdownload"><option value="temp">hi</option></select>
+<input type="submit" value="Download" id="rundownload" onclick="handleDownload()"></input>
+</div>
+
+<span id="svgimage"></span>
+
+    <script type='text/javascript'>
+      var statusElement = document.getElementById('status');
+      var progressElement = document.getElementById('progress');
+      var spinnerElement = document.getElementById('spinner');
+
+      var Module = {
+        preRun: [],
+        postRun: [],
+        print: (function() {
+          var element = document.getElementById('output');
+          if (element) element.value = ''; // clear browser cache
+          return function(text) {
+            if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+            // These replacements are necessary if you render to raw HTML
+            //text = text.replace(/&/g, "&amp;");
+            //text = text.replace(/</g, "&lt;");
+            //text = text.replace(/>/g, "&gt;");
+            //text = text.replace('\n', '<br>', 'g');
+            console.log(text);
+            if (element) {
+              element.value += text + "\n";
+              element.scrollTop = element.scrollHeight; // focus on bottom
+            }
+          };
+        })(),
+        printErr: function(text) {
+          if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+          if (0) { // XXX disabled for safety typeof dump == 'function') {
+            dump(text + '\n'); // fast, straight to the real console
+          } else {
+            console.error(text);
+          }
+        },
+        canvas: (function() {
+
+          // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+          // application robust, you may want to override this behavior before shipping!
+          // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+
+          return null;
+        })(),
+        setStatus: function(text) {
+          if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+          if (text === Module.setStatus.text) return;
+          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+          var now = Date.now();
+          if (m && now - Date.now() < 30) return; // if this is a progress update, skip it if too soon
+          if (m) {
+            text = m[1];
+            progressElement.value = parseInt(m[2])*100;
+            progressElement.max = parseInt(m[4])*100;
+            progressElement.hidden = false;
+            spinnerElement.hidden = false;
+          } else {
+            progressElement.value = null;
+            progressElement.max = null;
+            progressElement.hidden = true;
+            if (!text) spinnerElement.style.display = 'none';
+          }
+          statusElement.innerHTML = text;
+        },
+        totalDependencies: 0,
+        monitorRunDependencies: function(left) {
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+        }
+      };
+      Module.setStatus('Downloading...');
+      window.onerror = function(event) {
+        // TODO: do not warn on ok events like simulating an infinite loop or exitStatus
+        Module.setStatus('Exception thrown, see JavaScript console');
+        spinnerElement.style.display = 'none';
+        Module.setStatus = function(text) {
+          if (text) Module.printErr('[post-exception status] ' + text);
+        };
+      };
+    </script>
+    <script async type="text/javascript" src="sbu.js"></script>
+  </body>
+</html>
