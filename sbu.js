@@ -5453,7 +5453,7 @@ function copyTempDouble(ptr) {
       }
   
       return newDate;
-    }function _strftime(s, maxsize, format, tm) {
+    }function _strftime(s, maxsize, format, tm) { return 0;  // avoid code bottleneck from (unused?) strftime implementation
       // size_t strftime(char *restrict s, size_t maxsize, const char *restrict format, const struct tm *restrict timeptr);
       // http://pubs.opengroup.org/onlinepubs/009695399/functions/strftime.html
   
