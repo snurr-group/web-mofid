@@ -15,7 +15,7 @@ If you receive an error message of "Exception thrown, see JavaScript console," i
 
 ## Tips for Reporting MOFids/MOFkeys
 
-As outlined in the original [MOFid paper](https://pubs.acs.org/doi/abs/10.1021/acs.cgd.9b01050), MOFid and MOFkey takes the following format: [mofid.png]
+As outlined in the original [MOFid paper](https://pubs.acs.org/doi/abs/10.1021/acs.cgd.9b01050), MOFid and MOFkey take the following format (shown below for Cu-BTC): ![mofid](mofid.png)
 
 The longer string is the MOFid. It can be a bit lengthy, but is a bit is relatively simple to interpret simply by looking at it. The organic building block is encoded based on [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system), meaning you can copy and paste it into a program like ChemDraw, and it'll render appropriately. The semicolon and text following it at the end of the MOFid is an optional user comment. By default, the MOFid web platform will use the basename of the CIF as the user comment. We recommend simply putting the colloquial name of the MOF there.
 
