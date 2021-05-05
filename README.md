@@ -19,7 +19,7 @@ To generate an accurate MOFid/MOFkey, disorder should not be present in the stru
 
 Please note that the tools may require a few seconds to run the analysis after you click "submit." All analysis is performed locally on your own machine. If the analysis stalls and does not complete after a few minutes for some reason, please refresh the page and try again.
 
-If you receive an error message of "Exception thrown, see JavaScript console," it is often because the CIF parser is having trouble reading the formatting of your CIF. Try reading in your CIF in a program like [VESTA](https://jp-minerals.org/vesta/en/download.html) and re-exporting it as a CIF to see if that resolves the issue.
+If you receive an error message of "Exception thrown, see JavaScript console," it is often because the CIF parser is having trouble reading the formatting of your CIF. Try reading in your CIF in a program like [VESTA](https://jp-minerals.org/vesta/en/download.html) and re-exporting it as a CIF to see if that resolves the issue. Make sure to refresh the page before uploading your modified CIF.
 
 ## Further Information
 
