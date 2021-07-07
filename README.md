@@ -23,7 +23,7 @@ If you receive an error message of "Exception thrown, see JavaScript console," i
 
 ## Further Information
 
-The main project [GitHub repository](https://github.com/snurr-group/mofid) includes a downloadable C++/Python code, [example CIFs for analysis](https://github.com/snurr-group/mofid/tree/master/Resources/TestCIFs), and credits for third-party software.
+The main project [GitHub repository](https://github.com/snurr-group/mofid) includes a downloadable C++/Python code (for generating the MOFids for a large number of MOFs), [example CIFs for analysis](https://github.com/snurr-group/mofid/tree/master/Resources/TestCIFs), and credits for third-party software.
 
 This work is supported by the U.S. Department of Energy, Office of Basic 
 Energy Sciences, Division of Chemical Sciences, Geosciences and 
