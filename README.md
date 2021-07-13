@@ -24,7 +24,7 @@ If you receive an error message of "Exception thrown, see JavaScript console," i
 ## Citing MOFid/MOFkey
 If you use MOFid/MOFkey in your work, please cite the following reference:
 
-B.J. Bucior, A.S. Rosen, M. Haranczyk, Z. Yao, M.E. Ziebel, O.K. Farha, J.T. Hupp, J.I. Siepmann, A. Aspuru-Guzik, R.Q. Snurr. "Identification Schemes for Metal–Organic Frameworks To Enable Rapid Search and Cheminformatics Analysis", _Cryst. Growth Des._, 19, 6682-6697 (2019).
+[B.J. Bucior, A.S. Rosen, M. Haranczyk, Z. Yao, M.E. Ziebel, O.K. Farha, J.T. Hupp, J.I. Siepmann, A. Aspuru-Guzik, R.Q. Snurr. "Identification Schemes for Metal–Organic Frameworks To Enable Rapid Search and Cheminformatics Analysis", _Cryst. Growth Des._, 19, 6682-6697 (2019)](https://pubs.acs.org/doi/abs/10.1021/acs.cgd.9b01050).
 
 ## Further Information
 
