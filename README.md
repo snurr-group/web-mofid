@@ -21,6 +21,10 @@ Please note that the tools may require a few seconds to run the analysis after y
 
 If you receive an error message of "Exception thrown, see JavaScript console," it is often because the CIF parser is having trouble reading the formatting of your CIF. Try reading in your CIF in a program like [VESTA](https://jp-minerals.org/vesta/en/download.html) and re-exporting it as a CIF to see if that resolves the issue. Make sure to refresh the page before uploading your modified CIF.
 
+## Citing MOFid/MOFkey
+If you use MOFid/MOFkey in your work, please cite the following reference:
+B.J. Bucior, A.S. Rosen, M. Haranczyk, Z. Yao, M.E. Ziebel, O.K. Farha, J.T. Hupp, J.I. Siepmann, A. Aspuru-Guzik, R.Q. Snurr. "Identification Schemes for Metal–Organic Frameworks To Enable Rapid Search and Cheminformatics Analysis", _Cryst. Growth Des._, 19, 6682-6697 (2019).
+
 ## Further Information
 
 The main project [GitHub repository](https://github.com/snurr-group/mofid) includes a downloadable C++/Python code (for generating the MOFids for a large number of MOFs), [example CIFs for analysis](https://github.com/snurr-group/mofid/tree/master/Resources/TestCIFs), and credits for third-party software.
