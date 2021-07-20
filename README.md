@@ -5,6 +5,8 @@ The MOFid code has many utilities, two of which can be run in your web browser:
 1. **Generate a MOFid/MOFkey**: The [ID tool](sbu.html) allows you to deconstruct a MOF into its building blocks for the purposes of generating a MOFid/MOFkey, requiring only a CIF as the input.
 2. **Run queries on the CoRE MOF database**: The [Search Tool](searchdb.html) runs queries against the CoRE MOF 2019-ASR [database](https://zenodo.org/record/3677685) of ~15,000 MOFs.
 
+Before using the above tools, please read the information below, which includes some background information and very important tips/tricks!
+
 ## Understanding the Structure of MOFid/MOFkey
 
 As outlined in the original [MOFid paper](https://pubs.acs.org/doi/abs/10.1021/acs.cgd.9b01050), MOFid and MOFkey take the following format (shown below for Cu-BTC): ![mofid](mofid.png)
