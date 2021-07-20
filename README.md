@@ -17,7 +17,7 @@ The shorter string is the MOFkey. It is a hashed version of the MOFid. Since it 
 
 ## Tips for Generating MOFids/MOFkeys
 
-To generate an accurate MOFid/MOFkey, disorder should not be present in the structure. The ID tool will attempt to automatically remove solvent from the framework, if present; however, if the solvent is particularly complex or unusual though, you may need to remove it yourself. In general, molecules or ions that are not part of the framework should be removed from the CIF before generating the MOFid/MOFkey.
+To generate an accurate MOFid/MOFkey, disorder should not be present in the structure. The ID tool will attempt to automatically remove solvent from the framework, if present; however, if the solvent is particularly complex or unusual, you may need to remove it yourself. In general, molecules or ions that are not part of the framework should be removed from the CIF before generating the MOFid/MOFkey.
 
 Please note that the tools may require a few seconds to run the analysis after you click "submit." All analysis is performed locally on your own machine. If the analysis stalls and does not complete after a few minutes for some reason, please refresh the page and try again.
 
